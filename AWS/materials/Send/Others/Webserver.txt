@@ -1,0 +1,7 @@
+Install webserver
+yum -y install httpd
+echo "Demo Web Server" > /var/www/html/index.html
+systemctl enable httpd
+systemctl start httpd
+
+curl localhost

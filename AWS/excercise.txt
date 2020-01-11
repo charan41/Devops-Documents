@@ -1,0 +1,417 @@
+Lab [IAM & EC2]
+
+Task1
+1. create new group ec2group
+2. create two users  ec2usera1 ec2userb1  only with console access
+3. Aadd both users to ec2group
+4. Provide ec2full access to both the users in recommended method.
+
+Task2
+
+1. create new group rogroup
+2. create two users  rousera rouserb only without console access but should be able to login programmatic way
+3. Aadd both users to rogroup
+4. Provide aws full read only access to both the users in recommended method.
+
+Task3.
+
+1. Create a linux machine in Ohio region and server should be accessible from laptop.
+2. Create a linux machine in Ohio region in second AZ which should not be accessible from internet however should be able to login from windows server
+   created in next step.
+
+
+3. Create a windows server in the last az which should be accessible from internet and using this server login to second server.
+4. Create a new image of the server1 with name ec2training.
+5. Each of the above machine should allow only their respective remote login protocol/port from required source and with webserver ports [both secure and not secured]
+   from internet.
+
+
+murali.krishnaa7@gmail.com
+
+
+
+16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=26 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=27 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=28 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=29 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=30 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=31 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=32 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=33 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=34 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=35 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=36 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=37 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=38 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=39 ttl=43 time=                                                                                        16.8 ms
+64 bytes from ord37s07-in-f36.1e100.net (172.217.1.36): icmp_seq=40 ttl=43 time=                                                                                        16.9 ms
+Using username "ec2-user".
+Authenticating with public key "imported-openssh-key"
+Last login: Sun Dec  8 04:52:23 2019 from 157.49.248.150
+
+       __|  __|_  )
+       _|  (     /   Amazon Linux 2 AMI
+      ___|\___|___|
+
+https://aws.amazon.com/amazon-linux-2/
+5 package(s) needed for security, out of 13 available
+Run "sudo yum update" to apply all updates.
+[ec2-user@ip-10-0-1-60 ~]$ clear
+[ec2-user@ip-10-0-1-60 ~]$
+Using username "ec2-user".
+Authenticating with public key "imported-openssh-key"
+Last login: Sun Dec  8 04:59:17 2019 from 157.49.248.150
+
+       __|  __|_  )
+       _|  (     /   Amazon Linux 2 AMI
+      ___|\___|___|
+
+https://aws.amazon.com/amazon-linux-2/
+5 package(s) needed for security, out of 13 available
+Run "sudo yum update" to apply all updates.
+[ec2-user@ip-10-0-1-60 ~]$ sudo su -
+[root@ip-10-0-1-60 ~]# yum -y install httpd
+Loaded plugins: extras_suggestions, langpacks, priorities, update-motd
+amzn2-core                                                                                                                                       | 2.4 kB  00:00:00
+Resolving Dependencies
+--> Running transaction check
+---> Package httpd.x86_64 0:2.4.41-1.amzn2.0.1 will be installed
+--> Processing Dependency: httpd-tools = 2.4.41-1.amzn2.0.1 for package: httpd-2.4.41-1.amzn2.0.1.x86_64
+--> Processing Dependency: httpd-filesystem = 2.4.41-1.amzn2.0.1 for package: httpd-2.4.41-1.amzn2.0.1.x86_64
+--> Processing Dependency: system-logos-httpd for package: httpd-2.4.41-1.amzn2.0.1.x86_64
+--> Processing Dependency: mod_http2 for package: httpd-2.4.41-1.amzn2.0.1.x86_64
+--> Processing Dependency: httpd-filesystem for package: httpd-2.4.41-1.amzn2.0.1.x86_64
+--> Processing Dependency: /etc/mime.types for package: httpd-2.4.41-1.amzn2.0.1.x86_64
+--> Processing Dependency: libaprutil-1.so.0()(64bit) for package: httpd-2.4.41-1.amzn2.0.1.x86_64
+--> Processing Dependency: libapr-1.so.0()(64bit) for package: httpd-2.4.41-1.amzn2.0.1.x86_64
+--> Running transaction check
+---> Package apr.x86_64 0:1.6.3-5.amzn2.0.2 will be installed
+---> Package apr-util.x86_64 0:1.6.1-5.amzn2.0.2 will be installed
+--> Processing Dependency: apr-util-bdb(x86-64) = 1.6.1-5.amzn2.0.2 for package: apr-util-1.6.1-5.amzn2.0.2.x86_64
+---> Package generic-logos-httpd.noarch 0:18.0.0-4.amzn2 will be installed
+---> Package httpd-filesystem.noarch 0:2.4.41-1.amzn2.0.1 will be installed
+---> Package httpd-tools.x86_64 0:2.4.41-1.amzn2.0.1 will be installed
+---> Package mailcap.noarch 0:2.1.41-2.amzn2 will be installed
+---> Package mod_http2.x86_64 0:1.15.3-2.amzn2 will be installed
+--> Running transaction check
+---> Package apr-util-bdb.x86_64 0:1.6.1-5.amzn2.0.2 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+========================================================================================================================================================================
+ Package                                       Arch                             Version                                      Repository                            Size
+========================================================================================================================================================================
+Installing:
+ httpd                                         x86_64                           2.4.41-1.amzn2.0.1                           amzn2-core                           1.3 M
+Installing for dependencies:
+ apr                                           x86_64                           1.6.3-5.amzn2.0.2                            amzn2-core                           118 k
+ apr-util                                      x86_64                           1.6.1-5.amzn2.0.2                            amzn2-core                            99 k
+ apr-util-bdb                                  x86_64                           1.6.1-5.amzn2.0.2                            amzn2-core                            19 k
+ generic-logos-httpd                           noarch                           18.0.0-4.amzn2                               amzn2-core                            19 k
+ httpd-filesystem                              noarch                           2.4.41-1.amzn2.0.1                           amzn2-core                            23 k
+ httpd-tools                                   x86_64                           2.4.41-1.amzn2.0.1                           amzn2-core                            87 k
+ mailcap                                       noarch                           2.1.41-2.amzn2                               amzn2-core                            31 k
+ mod_http2                                     x86_64                           1.15.3-2.amzn2                               amzn2-core                           146 k
+
+Transaction Summary
+========================================================================================================================================================================
+Install  1 Package (+8 Dependent packages)
+
+Total download size: 1.8 M
+Installed size: 5.1 M
+Downloading packages:
+(1/9): apr-util-1.6.1-5.amzn2.0.2.x86_64.rpm                                                                                                     |  99 kB  00:00:00
+(2/9): apr-1.6.3-5.amzn2.0.2.x86_64.rpm                                                                                                          | 118 kB  00:00:00
+(3/9): apr-util-bdb-1.6.1-5.amzn2.0.2.x86_64.rpm                                                                                                 |  19 kB  00:00:00
+(4/9): generic-logos-httpd-18.0.0-4.amzn2.noarch.rpm                                                                                             |  19 kB  00:00:00
+(5/9): httpd-2.4.41-1.amzn2.0.1.x86_64.rpm                                                                                                       | 1.3 MB  00:00:00
+(6/9): httpd-tools-2.4.41-1.amzn2.0.1.x86_64.rpm                                                                                                 |  87 kB  00:00:00
+(7/9): mailcap-2.1.41-2.amzn2.noarch.rpm                                                                                                         |  31 kB  00:00:00
+(8/9): httpd-filesystem-2.4.41-1.amzn2.0.1.noarch.rpm                                                                                            |  23 kB  00:00:00
+(9/9): mod_http2-1.15.3-2.amzn2.x86_64.rpm                                                                                                       | 146 kB  00:00:00
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                   8.0 MB/s | 1.8 MB  00:00:00
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : apr-1.6.3-5.amzn2.0.2.x86_64                                                                                                                         1/9
+  Installing : apr-util-bdb-1.6.1-5.amzn2.0.2.x86_64                                                                                                                2/9
+  Installing : apr-util-1.6.1-5.amzn2.0.2.x86_64                                                                                                                    3/9
+  Installing : httpd-tools-2.4.41-1.amzn2.0.1.x86_64                                                                                                                4/9
+  Installing : generic-logos-httpd-18.0.0-4.amzn2.noarch                                                                                                            5/9
+  Installing : mailcap-2.1.41-2.amzn2.noarch                                                                                                                        6/9
+  Installing : httpd-filesystem-2.4.41-1.amzn2.0.1.noarch                                                                                                           7/9
+  Installing : mod_http2-1.15.3-2.amzn2.x86_64                                                                                                                      8/9
+  Installing : httpd-2.4.41-1.amzn2.0.1.x86_64                                                                                                                      9/9
+  Verifying  : apr-util-1.6.1-5.amzn2.0.2.x86_64                                                                                                                    1/9
+  Verifying  : apr-util-bdb-1.6.1-5.amzn2.0.2.x86_64                                                                                                                2/9
+  Verifying  : httpd-2.4.41-1.amzn2.0.1.x86_64                                                                                                                      3/9
+  Verifying  : httpd-filesystem-2.4.41-1.amzn2.0.1.noarch                                                                                                           4/9
+  Verifying  : mod_http2-1.15.3-2.amzn2.x86_64                                                                                                                      5/9
+  Verifying  : apr-1.6.3-5.amzn2.0.2.x86_64                                                                                                                         6/9
+  Verifying  : mailcap-2.1.41-2.amzn2.noarch                                                                                                                        7/9
+  Verifying  : generic-logos-httpd-18.0.0-4.amzn2.noarch                                                                                                            8/9
+  Verifying  : httpd-tools-2.4.41-1.amzn2.0.1.x86_64                                                                                                                9/9
+
+Installed:
+  httpd.x86_64 0:2.4.41-1.amzn2.0.1
+
+Dependency Installed:
+  apr.x86_64 0:1.6.3-5.amzn2.0.2                          apr-util.x86_64 0:1.6.1-5.amzn2.0.2                      apr-util-bdb.x86_64 0:1.6.1-5.amzn2.0.2
+  generic-logos-httpd.noarch 0:18.0.0-4.amzn2             httpd-filesystem.noarch 0:2.4.41-1.amzn2.0.1             httpd-tools.x86_64 0:2.4.41-1.amzn2.0.1
+  mailcap.noarch 0:2.1.41-2.amzn2                         mod_http2.x86_64 0:1.15.3-2.amzn2
+
+Complete!
+[root@ip-10-0-1-60 ~]# echo "Demo Web Server" > /var/www/html/index.html
+[root@ip-10-0-1-60 ~]# systemctl enable httpd
+Created symlink from /etc/systemd/system/multi-user.target.wants/httpd.service to /usr/lib/systemd/system/httpd.service.
+[root@ip-10-0-1-60 ~]# systemctl start httpd
+[root@ip-10-0-1-60 ~]# curl localhost
+Demo Web Server
+[root@ip-10-0-1-60 ~]#
+Using username "ec2-user".
+Authenticating with public key "imported-openssh-key"
+Last login: Sun Dec  8 04:59:45 2019 from 157.49.248.150
+
+       __|  __|_  )
+       _|  (     /   Amazon Linux 2 AMI
+      ___|\___|___|
+
+https://aws.amazon.com/amazon-linux-2/
+5 package(s) needed for security, out of 13 available
+Run "sudo yum update" to apply all updates.
+[ec2-user@ip-10-0-1-60 ~]$
+[ec2-user@ip-10-0-1-60 ~]$ yum install mariadb-server
+Loaded plugins: extras_suggestions, langpacks, priorities, update-motd
+You need to be root to perform this command.
+[ec2-user@ip-10-0-1-60 ~]$ sudo su -
+Last login: Sun Dec  8 04:59:59 UTC 2019 on pts/2
+[root@ip-10-0-1-60 ~]# yum install mariadb-server
+Loaded plugins: extras_suggestions, langpacks, priorities, update-motd
+amzn2-core                                                                                                                                       | 2.4 kB  00:00:00
+Resolving Dependencies
+--> Running transaction check
+---> Package mariadb-server.x86_64 1:5.5.64-1.amzn2 will be installed
+--> Processing Dependency: mariadb(x86-64) = 1:5.5.64-1.amzn2 for package: 1:mariadb-server-5.5.64-1.amzn2.x86_64
+--> Processing Dependency: perl-DBI for package: 1:mariadb-server-5.5.64-1.amzn2.x86_64
+--> Processing Dependency: perl-DBD-MySQL for package: 1:mariadb-server-5.5.64-1.amzn2.x86_64
+--> Processing Dependency: perl(Data::Dumper) for package: 1:mariadb-server-5.5.64-1.amzn2.x86_64
+--> Processing Dependency: perl(DBI) for package: 1:mariadb-server-5.5.64-1.amzn2.x86_64
+--> Running transaction check
+---> Package mariadb.x86_64 1:5.5.64-1.amzn2 will be installed
+---> Package perl-DBD-MySQL.x86_64 0:4.023-6.amzn2 will be installed
+---> Package perl-DBI.x86_64 0:1.627-4.amzn2.0.2 will be installed
+--> Processing Dependency: perl(RPC::PlServer) >= 0.2001 for package: perl-DBI-1.627-4.amzn2.0.2.x86_64
+--> Processing Dependency: perl(RPC::PlClient) >= 0.2000 for package: perl-DBI-1.627-4.amzn2.0.2.x86_64
+---> Package perl-Data-Dumper.x86_64 0:2.145-3.amzn2.0.2 will be installed
+--> Running transaction check
+---> Package perl-PlRPC.noarch 0:0.2020-14.amzn2 will be installed
+--> Processing Dependency: perl(Net::Daemon) >= 0.13 for package: perl-PlRPC-0.2020-14.amzn2.noarch
+--> Processing Dependency: perl(Net::Daemon::Test) for package: perl-PlRPC-0.2020-14.amzn2.noarch
+--> Processing Dependency: perl(Net::Daemon::Log) for package: perl-PlRPC-0.2020-14.amzn2.noarch
+--> Processing Dependency: perl(Compress::Zlib) for package: perl-PlRPC-0.2020-14.amzn2.noarch
+--> Running transaction check
+---> Package perl-IO-Compress.noarch 0:2.061-2.amzn2 will be installed
+--> Processing Dependency: perl(Compress::Raw::Zlib) >= 2.061 for package: perl-IO-Compress-2.061-2.amzn2.noarch
+--> Processing Dependency: perl(Compress::Raw::Bzip2) >= 2.061 for package: perl-IO-Compress-2.061-2.amzn2.noarch
+---> Package perl-Net-Daemon.noarch 0:0.48-5.amzn2 will be installed
+--> Running transaction check
+---> Package perl-Compress-Raw-Bzip2.x86_64 0:2.061-3.amzn2.0.2 will be installed
+---> Package perl-Compress-Raw-Zlib.x86_64 1:2.061-4.amzn2.0.2 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+========================================================================================================================================================================
+ Package                                         Arch                           Version                                        Repository                          Size
+========================================================================================================================================================================
+Installing:
+ mariadb-server                                  x86_64                         1:5.5.64-1.amzn2                               amzn2-core                          11 M
+Installing for dependencies:
+ mariadb                                         x86_64                         1:5.5.64-1.amzn2                               amzn2-core                         9.0 M
+ perl-Compress-Raw-Bzip2                         x86_64                         2.061-3.amzn2.0.2                              amzn2-core                          32 k
+ perl-Compress-Raw-Zlib                          x86_64                         1:2.061-4.amzn2.0.2                            amzn2-core                          58 k
+ perl-DBD-MySQL                                  x86_64                         4.023-6.amzn2                                  amzn2-core                         141 k
+ perl-DBI                                        x86_64                         1.627-4.amzn2.0.2                              amzn2-core                         804 k
+ perl-Data-Dumper                                x86_64                         2.145-3.amzn2.0.2                              amzn2-core                          48 k
+ perl-IO-Compress                                noarch                         2.061-2.amzn2                                  amzn2-core                         260 k
+ perl-Net-Daemon                                 noarch                         0.48-5.amzn2                                   amzn2-core                          51 k
+ perl-PlRPC                                      noarch                         0.2020-14.amzn2                                amzn2-core                          36 k
+
+Transaction Summary
+========================================================================================================================================================================
+Install  1 Package (+9 Dependent packages)
+
+Total download size: 22 M
+Installed size: 111 M
+Is this ok [y/d/N]: y
+Downloading packages:
+(1/10): mariadb-5.5.64-1.amzn2.x86_64.rpm                                                                                                        | 9.0 MB  00:00:00
+(2/10): mariadb-server-5.5.64-1.amzn2.x86_64.rpm                                                                                                 |  11 MB  00:00:00
+(3/10): perl-Compress-Raw-Bzip2-2.061-3.amzn2.0.2.x86_64.rpm                                                                                     |  32 kB  00:00:00
+(4/10): perl-Compress-Raw-Zlib-2.061-4.amzn2.0.2.x86_64.rpm                                                                                      |  58 kB  00:00:00
+(5/10): perl-DBD-MySQL-4.023-6.amzn2.x86_64.rpm                                                                                                  | 141 kB  00:00:00
+(6/10): perl-Data-Dumper-2.145-3.amzn2.0.2.x86_64.rpm                                                                                            |  48 kB  00:00:00
+(7/10): perl-DBI-1.627-4.amzn2.0.2.x86_64.rpm                                                                                                    | 804 kB  00:00:00
+(8/10): perl-IO-Compress-2.061-2.amzn2.noarch.rpm                                                                                                | 260 kB  00:00:00
+(9/10): perl-PlRPC-0.2020-14.amzn2.noarch.rpm                                                                                                    |  36 kB  00:00:00
+(10/10): perl-Net-Daemon-0.48-5.amzn2.noarch.rpm                                                                                                 |  51 kB  00:00:00
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                    38 MB/s |  22 MB  00:00:00
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : perl-Data-Dumper-2.145-3.amzn2.0.2.x86_64                                                                                                           1/10
+  Installing : perl-Compress-Raw-Bzip2-2.061-3.amzn2.0.2.x86_64                                                                                                    2/10
+  Installing : perl-Net-Daemon-0.48-5.amzn2.noarch                                                                                                                 3/10
+  Installing : 1:mariadb-5.5.64-1.amzn2.x86_64                                                                                                                     4/10
+  Installing : 1:perl-Compress-Raw-Zlib-2.061-4.amzn2.0.2.x86_64                                                                                                   5/10
+  Installing : perl-IO-Compress-2.061-2.amzn2.noarch                                                                                                               6/10
+  Installing : perl-PlRPC-0.2020-14.amzn2.noarch                                                                                                                   7/10
+  Installing : perl-DBI-1.627-4.amzn2.0.2.x86_64                                                                                                                   8/10
+  Installing : perl-DBD-MySQL-4.023-6.amzn2.x86_64                                                                                                                 9/10
+  Installing : 1:mariadb-server-5.5.64-1.amzn2.x86_64                                                                                                             10/10
+  Verifying  : 1:perl-Compress-Raw-Zlib-2.061-4.amzn2.0.2.x86_64                                                                                                   1/10
+  Verifying  : 1:mariadb-5.5.64-1.amzn2.x86_64                                                                                                                     2/10
+  Verifying  : perl-Net-Daemon-0.48-5.amzn2.noarch                                                                                                                 3/10
+  Verifying  : perl-Data-Dumper-2.145-3.amzn2.0.2.x86_64                                                                                                           4/10
+  Verifying  : perl-DBD-MySQL-4.023-6.amzn2.x86_64                                                                                                                 5/10
+  Verifying  : perl-IO-Compress-2.061-2.amzn2.noarch                                                                                                               6/10
+  Verifying  : perl-Compress-Raw-Bzip2-2.061-3.amzn2.0.2.x86_64                                                                                                    7/10
+  Verifying  : perl-DBI-1.627-4.amzn2.0.2.x86_64                                                                                                                   8/10
+  Verifying  : perl-PlRPC-0.2020-14.amzn2.noarch                                                                                                                   9/10
+  Verifying  : 1:mariadb-server-5.5.64-1.amzn2.x86_64                                                                                                             10/10
+
+Installed:
+  mariadb-server.x86_64 1:5.5.64-1.amzn2
+
+Dependency Installed:
+  mariadb.x86_64 1:5.5.64-1.amzn2                 perl-Compress-Raw-Bzip2.x86_64 0:2.061-3.amzn2.0.2         perl-Compress-Raw-Zlib.x86_64 1:2.061-4.amzn2.0.2
+  perl-DBD-MySQL.x86_64 0:4.023-6.amzn2           perl-DBI.x86_64 0:1.627-4.amzn2.0.2                        perl-Data-Dumper.x86_64 0:2.145-3.amzn2.0.2
+  perl-IO-Compress.noarch 0:2.061-2.amzn2         perl-Net-Daemon.noarch 0:0.48-5.amzn2                      perl-PlRPC.noarch 0:0.2020-14.amzn2
+
+Complete!
+[root@ip-10-0-1-60 ~]# systemctl enable  mariadb.service
+Created symlink from /etc/systemd/system/multi-user.target.wants/mariadb.service to /usr/lib/systemd/system/mariadb.service.
+[root@ip-10-0-1-60 ~]# systemctl start mariadb.service
+[root@ip-10-0-1-60 ~]# ystemctl status mariadb.service
+-bash: ystemctl: command not found
+[root@ip-10-0-1-60 ~]# stemctl status mariadb.service
+-bash: stemctl: command not found
+[root@ip-10-0-1-60 ~]# systemctl status mariadb.service
+? mariadb.service - MariaDB database server
+   Loaded: loaded (/usr/lib/systemd/system/mariadb.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sun 2019-12-08 05:09:14 UTC; 47s ago
+  Process: 4113 ExecStartPost=/usr/libexec/mariadb-wait-ready $MAINPID (code=exited, status=0/SUCCESS)
+  Process: 4026 ExecStartPre=/usr/libexec/mariadb-prepare-db-dir %n (code=exited, status=0/SUCCESS)
+ Main PID: 4112 (mysqld_safe)
+   CGroup: /system.slice/mariadb.service
+           +-4112 /bin/sh /usr/bin/mysqld_safe --basedir=/usr
+           +-4275 /usr/libexec/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib64/mysql/plugin --log-error=/var/log/mariadb/mariadb.log --pid-fil...
+
+Dec 08 05:09:12 ip-10-0-1-60.us-east-2.compute.internal mariadb-prepare-db-dir[4026]: MySQL manual for more instructions.
+Dec 08 05:09:12 ip-10-0-1-60.us-east-2.compute.internal mariadb-prepare-db-dir[4026]: Please report any problems at http://mariadb.org/jira
+Dec 08 05:09:12 ip-10-0-1-60.us-east-2.compute.internal mariadb-prepare-db-dir[4026]: The latest information about MariaDB is available at http://mariadb.org/.
+Dec 08 05:09:12 ip-10-0-1-60.us-east-2.compute.internal mariadb-prepare-db-dir[4026]: You can find additional information about the MySQL part at:
+Dec 08 05:09:12 ip-10-0-1-60.us-east-2.compute.internal mariadb-prepare-db-dir[4026]: http://dev.mysql.com
+Dec 08 05:09:12 ip-10-0-1-60.us-east-2.compute.internal mariadb-prepare-db-dir[4026]: Consider joining MariaDB's strong and vibrant community:
+Dec 08 05:09:12 ip-10-0-1-60.us-east-2.compute.internal mariadb-prepare-db-dir[4026]: https://mariadb.org/get-involved/
+Dec 08 05:09:12 ip-10-0-1-60.us-east-2.compute.internal mysqld_safe[4112]: 191208 05:09:12 mysqld_safe Logging to '/var/log/mariadb/mariadb.log'.
+Dec 08 05:09:12 ip-10-0-1-60.us-east-2.compute.internal mysqld_safe[4112]: 191208 05:09:12 mysqld_safe Starting mysqld daemon with databases from /var/lib/mysql
+Dec 08 05:09:14 ip-10-0-1-60.us-east-2.compute.internal systemd[1]: Started MariaDB database server.
+[root@ip-10-0-1-60 ~]# mysql -h localhost -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 2
+Server version: 5.5.64-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]>
+MariaDB [(none)]> CREATE USER 'dbadmin'@'localhost' IDENTIFIED BY 'Sql@1234';
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [(none)]> GRANT ALL ON *.* TO 'dbadmin'@'localhost' WITH GRANT OPTION;
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [(none)]>
+MariaDB [(none)]> CREATE USER 'dbadmin'@'%' IDENTIFIED BY 'Sql@1234';
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [(none)]> GRANT ALL ON *.* TO 'dbadmin'@'%' WITH GRANT OPTION;
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [(none)]>
+MariaDB [(none)]> exit
+Bye
+[root@ip-10-0-1-60 ~]# mysql -h localhost -u dbadmin  -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 3
+Server version: 5.5.64-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> create database demo;
+Query OK, 1 row affected (0.00 sec)
+
+MariaDB [(none)]> use database demo;
+ERROR 1049 (42000): Unknown database 'database'
+MariaDB [(none)]> use demo;
+Database changed
+MariaDB [demo]> CREATE TABLE pages
+    -> ( page_id INT(11) NOT NULL AUTO_INCREMENT,
+    ->   website_id INT(11) NOT NULL,
+    ->   host_name VARCHAR(45) NOT NULL DEFAULT 'TBD',
+    ->   CONSTRAINT pages_pk PRIMARY KEY (page_id)
+    -> );
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [demo]> INSERT INTO pages (page_id, website_id,host_name) VALUES (001000,2000,test);
+ERROR 1054 (42S22): Unknown column 'test' in 'field list'
+MariaDB [demo]> create table user_details
+    -> ( userid INT(11),
+    ->   location VARCHAR(45)
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+MariaDB [demo]>
+MariaDB [demo]> INSERT INTO user_details (userid, location) VALUES (100, "chennai");
+Query OK, 1 row affected (0.00 sec)
+
+MariaDB [demo]>
+MariaDB [demo]>
+MariaDB [demo]> INSERT INTO user_details (userid, location) VALUES (100, "chennai");8Ctrl-C -- exit!
+Aborted
+[root@ip-10-0-1-60 ~]# mysql -h localhost -u dbadmin  -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 4
+Server version: 5.5.64-MariaDB MariaDB Server
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> use demo;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+MariaDB [demo]> select * from user_details;
++--------+----------+
+| userid | location |
++--------+----------+
+|    100 | chennai  |
++--------+----------+
+1 row in set (0.00 sec)
+
+MariaDB [demo]>

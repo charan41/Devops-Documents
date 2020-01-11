@@ -1,0 +1,19 @@
+#!/bin/bash
+hostname awswebserver
+yum install -y httpd24 php56 php56-mysqlnd
+service httpd start
+chkconfig httpd on
+groupadd www
+usermod -a -G www ec2-user
+chown -R root:www /var/www
+chmod 2775 /var/www
+find /var/www -type d -exec sudo chmod 2775 {} +
+find /var/www -type f -exec sudo chmod 0664 {} +
+mkdir /var/www/html
+chmod 2775 /var/www/html
+find /var/www/html -type d -exec sudo chmod 2775 {} +
+find /var/www/html -type f -exec sudo chmod 0664 {} +
+cd /var/www/html/
+wget https://s3.us-east-2.amazonaws.com/ohiowebserver-code/phpdump.tar
+tar xvf /var/www/html/phpdump.tar
+service httpd restart

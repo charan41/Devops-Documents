@@ -1,0 +1,89 @@
+[root@awsdemo1 ~]# lsblk
+NAME    MAJ:MIN RM SIZE RO TYPE MOUNTPOINT
+xvda    202:0    0   8G  0 disk
++-xvda1 202:1    0   8G  0 part /
+xvdf    202:80   0   1G  0 disk
+[root@awsdemo1 ~]#
+
+
+[root@awsdemo1 ~]# pvcreate /dev/xvdf
+  Physical volume "/dev/xvdf" successfully created.
+
+[root@awsdemo1 ~]# vgcreate demovg /dev/xvdf
+  Volume group "demovg" successfully created
+
+[root@awsdemo1 ~]# lvcreate -L 500M -n demolv demovg
+  Logical volume "demolv" created.
+
+[root@awsdemo1 ~]# pvs
+  PV         VG     Fmt  Attr PSize    PFree
+  /dev/sdf   demovg lvm2 a--  1020.00m 520.00m
+
+[root@awsdemo1 ~]# vgs
+  VG     #PV #LV #SN Attr   VSize    VFree
+  demovg   1   1   0 wz--n- 1020.00m 520.00m
+
+[root@awsdemo1 ~]# lvs
+  LV     VG     Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  demolv demovg -wi-a----- 500.00m
+[root@awsdemo1 ~]#
+
+
+[root@awsdemo1 ~]# lsblk
+NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+xvda            202:0    0    8G  0 disk
++-xvda1         202:1    0    8G  0 part /
+xvdf            202:80   0    1G  0 disk
++-demovg-demolv 253:0    0  500M  0 lvm
+[root@awsdemo1 ~]#
+
+
+[root@awsdemo1 ~]# mkfs.xfs /dev/demovg/demolv
+meta-data=/dev/demovg/demolv     isize=512    agcount=4, agsize=32000 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=0
+data     =                       bsize=4096   blocks=128000, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=855, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+
+[root@awsdemo1 ~]# lsblk
+NAME            MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+xvda            202:0    0    8G  0 disk
++-xvda1         202:1    0    8G  0 part /
+xvdf            202:80   0    1G  0 disk
++-demovg-demolv 253:0    0  500M  0 lvm
+[root@awsdemo1 ~]#
+
+
+[root@awsdemo1 ~]# blkid
+/dev/xvda1: LABEL="/" UUID="add39d87-732e-4e76-9ad7-40a00dbb04e5" TYPE="xfs" PARTLABEL="Linux" PARTUUID="47de1259-f7c2-470b-b49b-5e054f378a95"
+/dev/mapper/demovg-demolv: UUID="4fa5004e-01c1-4f6a-8c10-913c0b962b31" TYPE="xfs"
+/dev/xvdf: UUID="rDWWw6-vrCl-fyIQ-XUE8-pkSo-OBnr-19lTT6" TYPE="LVM2_member"
+[root@awsdemo1 ~]#
+
+[root@awsdemo1 ~]# mkdir /demodata
+[root@awsdemo1 ~]#
+
+[root@awsdemo1 ~]# cat /etc/fstab
+#
+UUID=add39d87-732e-4e76-9ad7-40a00dbb04e5     /           xfs    defaults,noatime  1   1
+
+UUID=4fa5004e-01c1-4f6a-8c10-913c0b962b31	/demodata	 xfs    defaults,noatime  1   1
+or
+/dev/mapper/demovg-demolv			/demodata	 xfs    defaults,noatime  1   1
+
+
+[root@awsdemo1 ~]# cat /etc/fstab
+#
+UUID=add39d87-732e-4e76-9ad7-40a00dbb04e5     /           xfs    defaults,noatime  1   1
+/dev/mapper/demovg-demolv                       /demodata        xfs    defaults,noatime  1   1
+
+
+[root@awsdemo1 ~]# df -h /demodata/
+Filesystem                 Size  Used Avail Use% Mounted on
+/dev/mapper/demovg-demolv  497M   26M  471M   6% /demodata
+[root@awsdemo1 ~]#
+

@@ -1,0 +1,18 @@
+ec2 
+
+service: ec2
+
+1. AMI - AMAzon Machine Image [linux]
+2. Instance type [Hardware configuration] memory/processory/ebs/nework
+3. Configuring instances
+	1. no of nstan - 1
+	2 
+
+
+Class A: 10.0. 0.0 to 10.255. 255.255.
+Class B: 172.16. 0.0 to 172.31. 255.255.
+Class C: 192.168. 0.0 to 192.168. 255.255.
+
+https://www.site24x7.com/tools/ipv4-subnetcalculator.html  
+https://www.calculator.net/ip-subnet-calculator.html 
+ 

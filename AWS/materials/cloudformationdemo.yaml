@@ -1,0 +1,645 @@
+"AWSTemplateFormatVersion" : "2010-09-09"
+"Description" : "Cloudformation Template - Murali"
+
+####################################################################################################
+#ParametersSection - Parameters passed for the Stack, if nothing specified during creation consider 
+#using Default values with minimum recomded values
+####################################################################################################
+
+Parameters:
+
+  EnvironmentType:
+    Description: An environment type for the Stack being created.
+    AllowedValues: 
+      - DEV
+      - PROD
+      - TEST
+      - DR
+    Type: String
+    Default: TEST
+
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+    Default: Prod-Ohio
+ 
+  NumberOfAZs:
+    Description: Total number of AZs to be utilized.  For HighAvailability it is recommended to use atleast 2 AZ.
+    Type: Number
+    AllowedValues: 
+      - 1
+      - 2
+      - 3
+    Default: 2
+  
+  CreatePublicSubnet:
+    Description: Do you want public subnets to be created?
+    Type: String
+    AllowedValues: 
+      - True
+      - False
+    Default: True
+
+  CreatePrivateSubnet:
+    Description: Do you want public subnets to be created?
+    Type: String
+    AllowedValues: 
+      - True
+      - False
+    Default: True
+
+
+  VpcCidr:
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Type: String
+    Default: 10.0.0.0/16
+
+  PublicSubnetCidr1:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.0.0/27
+    
+  PublicSubnetCidr2:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the Second Availability Zone
+    Type: String
+    Default: 10.0.1.0/27
+
+  PublicSubnetCidr3:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the Second Availability Zone
+    Type: String
+    Default: 10.0.2.0/27
+ 
+  PrivateSubnetCidr1:
+    Description: Please enter the IP range (CIDR notation) for the private subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.3.0/27
+
+  PrivateSubnetCidr2:
+    Description: Please enter the IP range (CIDR notation) for the private subnet in the second Availability Zone
+    Type: String
+    Default: 10.0.4.0/27
+
+  PrivateSubnetCidr3:
+    Description: Please enter the IP range (CIDR notation) for the private subnet in the second Availability Zone
+    Type: String
+    Default: 10.0.5.0/27
+
+  CreateBastionHost:
+    Description: Do you need a bastion host to be deployed for accessing private hosts in the Network Securely?
+    Type: String
+    AllowedValues: 
+      - True
+      - False
+    Default: True
+
+  CreatePrivateInstance:
+    Description: No of private instances to be created?
+    Type: Number
+    AllowedValues: 
+      - 1
+      - 2
+    Default: 1
+
+  CreatePublicInstance:
+    Description: No of public instances to be created?
+    Type: Number
+    AllowedValues: 
+      - 1
+      - 2
+    Default: 1
+
+
+Mappings: 
+  AMIRegionMap: 
+    us-east-1: 
+      "PROD":  "ami-011b3ccf1bd6db744"
+      "DR":  "ami-011b3ccf1bd6db744"
+      "DEV": "ami-0de53d8956e8dcf80"
+      "TEST": "ami-0de53d8956e8dcf80"
+    us-east-2: 
+      "PROD":  "ami-0b500ef59d8335eee"
+      "DR":  "ami-0b500ef59d8335eee"
+      "DEV": "ami-02bcbb802e03574ba"
+      "TEST": "ami-02bcbb802e03574ba"
+    ap-south-1: 
+      "PROD":  "ami-5b673c34"
+      "DR":  "ami-5b673c34"
+      "DEV": "ami-0889b8a448de4fc44"
+      "TEST": "ami-0889b8a448de4fc44"
+    ap-southeast-1: 
+      "PROD":  "ami-76144b0a"
+      "DR":  "ami-76144b0a"
+      "DEV": "ami-0b419c3a4b01d1859"
+      "TEST": "ami-0b419c3a4b01d1859"
+
+Conditions:
+  PublicSubnet1: !Equals [ !Ref CreatePublicSubnet, True ]
+  PrivateSubnet1: !Equals [ !Ref CreatePrivateSubnet, True ]
+  PublicSubnet2: !And [ !Not [ !Equals [ !Ref NumberOfAZs, 1 ] ], !Equals [ !Ref CreatePublicSubnet, True ] ]
+  PrivateSubnet2: !And [ !Not [ !Equals [ !Ref NumberOfAZs,1 ] ], !Equals [ !Ref CreatePrivateSubnet, True ] ]
+  PublicSubnet3: !And [ !Equals [ !Ref NumberOfAZs, 3 ], !Equals [ !Ref CreatePublicSubnet, True ] ]
+  PrivateSubnet3: !And [ !Equals [ !Ref NumberOfAZs, 3 ], !Equals [ !Ref CreatePrivateSubnet, True ] ]
+  BastionHost: !Equals [ !Ref CreateBastionHost, True ]
+  PrivateInstance2: !Equals [ !Ref CreatePrivateInstance, 2 ] 
+  PublicInstance2: !Equals [ !Ref CreatePublicInstance, 2 ] 
+
+####################################################################################################
+#Resources Section - List of Resources to be created along with their Values
+####################################################################################################
+
+Resources:
+#Vpc Resource
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidr
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      InstanceTenancy: default
+      Tags:
+      - Key: Name
+        Value: !Sub ${AWS::StackName}-VPC
+
+
+#Public subnet1 On AZ 0 inside New VPC
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Condition: PublicSubnet1
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs ]
+      CidrBlock: !Ref PublicSubnetCidr1
+      MapPublicIpOnLaunch: true
+      Tags:
+       - Key: Name
+         Value: !Sub ${AWS::StackName}-PublicSubnet1
+
+#Public subnet2 On AZ 1 inside New VPC
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Condition: PublicSubnet2
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs ]
+      CidrBlock: !Ref PublicSubnetCidr2
+      MapPublicIpOnLaunch: true
+      Tags:
+       - Key: Name
+         Value: !Sub ${AWS::StackName}-PublicSubnet2
+
+#Public subnet3 On AZ 2 inside New VPC
+  PublicSubnet3:
+    Type: AWS::EC2::Subnet
+    Condition: PublicSubnet3
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 2, !GetAZs ]
+      CidrBlock: !Ref PublicSubnetCidr3
+      MapPublicIpOnLaunch: true
+      Tags:
+       - Key: Name
+         Value: !Sub ${AWS::StackName}-PublicSubnet3
+
+
+#Private subnet1 On AZ 0 inside New VPC
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Condition: PrivateSubnet1
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs ]
+      CidrBlock: !Ref PrivateSubnetCidr1
+      MapPublicIpOnLaunch: false
+      Tags:
+       - Key: Name
+         Value: !Sub ${AWS::StackName}-PrivateSubnet1
+
+#Private subnet2 On AZ 1 inside New VPC
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Condition: PrivateSubnet2
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs ]
+      CidrBlock: !Ref PrivateSubnetCidr2
+      MapPublicIpOnLaunch: false
+      Tags:
+       - Key: Name
+         Value: !Sub ${AWS::StackName}-PrivateSubnet2
+
+#Private subnet3 On AZ 2 inside New VPC
+  PrivateSubnet3:
+    Type: AWS::EC2::Subnet
+    Condition: PrivateSubnet3
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 2, !GetAZs ]
+      CidrBlock: !Ref PrivateSubnetCidr3
+      MapPublicIpOnLaunch: false
+      Tags:
+       - Key: Name
+         Value: !Sub ${AWS::StackName}-PrivateSubnet3
+
+
+#IGW Resource for New VPC
+
+  IGW:
+    Type: AWS::EC2::InternetGateway     
+    Properties: 
+      Tags:
+       - Key: Name
+         Value: !Sub ${AWS::StackName}-IGW
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref IGW
+
+#Custom Routes for Private and Public Subnets
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+       - Key: Name
+         Value: !Sub ${AWS::StackName}-PublicRouteTable
+
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+       - Key: Name
+         Value: !Sub ${AWS::StackName}-PrivateRouteTable
+
+
+
+#Add Internet Route for  Public Subnet Route
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref IGW
+
+
+#Associate Subnets to Custom Routes created above
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: PublicSubnet1
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: PublicSubnet2
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnet3RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: PublicSubnet3
+    Properties:
+      SubnetId: !Ref PublicSubnet3
+      RouteTableId: !Ref PublicRouteTable
+
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: PrivateSubnet1
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable
+
+  PrivateSubnet2RouteTableAssociation:
+    Condition: PrivateSubnet1
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      RouteTableId: !Ref PrivateRouteTable
+
+  PrivateSubnet3RouteTableAssociation:
+    Condition: PrivateSubnet3
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet3
+      RouteTableId: !Ref PrivateRouteTable
+
+
+#Custom Network ACL for VPC
+  CustomNACL:
+    Type: AWS::EC2::NetworkAcl
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+       - Key: Name
+         Value: !Sub ${AWS::StackName}-NACL
+
+#Custom NACL Rules
+  CustomNACLOutboundACL:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref CustomNACL
+      RuleNumber: '100'
+      Protocol: "-1"
+      RuleAction: allow
+      Egress: 'true'
+      CidrBlock: !Ref VpcCidr
+      Icmp:
+        Code: "-1"
+        Type: "-1"
+
+  CustomNACLInboundssh:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref CustomNACL
+      RuleNumber: '100'
+      Protocol: "6"
+      RuleAction: allow
+      Egress: 'false'
+      CidrBlock: !Ref VpcCidr
+      Icmp:
+        Code: "-1"
+        Type: "-1"
+      PortRange:
+        From: '22'
+        To: '22'
+
+  CustomNACLInboundrdp:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref CustomNACL
+      RuleNumber: '101'
+      Protocol: "6"
+      RuleAction: allow
+      Egress: 'false'
+      CidrBlock: !Ref VpcCidr
+      Icmp:
+        Code: "-1"
+        Type: "-1"
+      PortRange:
+        From: '3389'
+        To: '3389'
+
+  CustomNACLInboundhttp:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref CustomNACL
+      RuleNumber: '102'
+      Protocol: "6"
+      RuleAction: allow
+      Egress: 'false'
+      CidrBlock: 0.0.0.0/0
+      Icmp:
+        Code: "-1"
+        Type: "-1"
+      PortRange:
+        From: '80'
+        To: '80'
+
+  CustomNACLInboundhttps:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref CustomNACL
+      RuleNumber: '103'
+      Protocol: "6"
+      RuleAction: allow
+      Egress: 'false'
+      CidrBlock: 0.0.0.0/0
+      Icmp:
+        Code: "-1"
+        Type: "-1"
+      PortRange:
+        From: '443'
+        To: '443'
+
+  CustomNACLInbounddeny:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref CustomNACL
+      RuleNumber: '104'
+      Protocol: "6"
+      RuleAction: deny
+      Egress: 'false'
+      CidrBlock: 0.0.0.0/0
+      Icmp:
+        Code: "-1"
+        Type: "-1"
+      PortRange:
+        From: '6666'
+        To: '6666'
+
+
+#Subnet Association with Custom NACL
+  PublicSubnet1NetworkAclAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Condition: PublicSubnet1
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      NetworkAclId: !Ref CustomNACL
+
+  PublicSubnet2NetworkAclAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Condition: PublicSubnet2
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      NetworkAclId: !Ref CustomNACL
+
+  PublicSubnet3NetworkAclAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Condition: PublicSubnet3
+    Properties:
+      SubnetId: !Ref PublicSubnet3
+      NetworkAclId: !Ref CustomNACL
+
+  PrivateSubnet1NetworkAclAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Condition: PrivateSubnet1
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      NetworkAclId: !Ref CustomNACL
+
+  PrivateSubnet2NetworkAclAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Condition: PrivateSubnet2
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      NetworkAclId: !Ref CustomNACL
+
+  PrivateSubnet3NetworkAclAssociation:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Condition: PrivateSubnet3
+    Properties:
+      SubnetId: !Ref PrivateSubnet3
+      NetworkAclId: !Ref CustomNACL
+
+#Security Group Creation
+  PublicWebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Security Group for public Web servers"
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref VpcCidr
+      - IpProtocol: tcp
+        FromPort: 3389
+        ToPort: 3389
+        CidrIp: !Ref VpcCidr
+      SecurityGroupEgress:
+      - IpProtocol: -1
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: -1
+        CidrIp: 0.0.0.0/0
+      Tags:
+      - Key: Name
+        Value: !Sub ${AWS::StackName}-PublicWebSecurityGroup
+
+  PrivateDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Security Group for private DB Servers"
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 3306
+        ToPort: 3306
+        SourceSecurityGroupId: !Ref PublicWebSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 1433
+        ToPort: 1433
+        SourceSecurityGroupId: !Ref PublicWebSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 1521
+        ToPort: 1521
+        SourceSecurityGroupId: !Ref PublicWebSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 5432
+        ToPort: 5432
+        SourceSecurityGroupId: !Ref PublicWebSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref VpcCidr
+      - IpProtocol: tcp
+        FromPort: 3389
+        ToPort: 3389
+        CidrIp: !Ref VpcCidr
+      SecurityGroupEgress:
+      - IpProtocol: -1
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: -1
+        CidrIp: 0.0.0.0/0
+      Tags:
+      - Key: Name
+        Value: !Sub ${AWS::StackName}-PrivateDBSecurityGroup
+
+
+  BastionSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Condition: BastionHost
+    Properties:
+      GroupDescription: "Security Group for Bastion Host"
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 3389
+        ToPort: 3389
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref VpcCidr
+      - IpProtocol: tcp
+        FromPort: 3389
+        ToPort: 3389
+        CidrIp: !Ref VpcCidr
+
+  PrivateInstance1: 
+    Type: "AWS::EC2::Instance"
+    Properties: 
+      ImageId: !FindInMap [AMIRegionMap, !Ref "AWS::Region", !Ref EnvironmentType]
+      InstanceType: t2.micro
+      SubnetId: !Ref PrivateSubnet1
+      SecurityGroupIds: 
+        - !Ref PrivateDBSecurityGroup
+      KeyName: aws-cf-keypair1
+      Tags:
+      - Key: Name
+        Value: awspriv01
+
+  PrivateInstance2: 
+    Type: "AWS::EC2::Instance"
+    Condition: PrivateInstance2
+    Properties: 
+      ImageId: !FindInMap [AMIRegionMap, !Ref "AWS::Region", !Ref EnvironmentType]
+      InstanceType: t2.micro
+      SubnetId: !Ref PrivateSubnet2
+      SecurityGroupIds: 
+        - !Ref PrivateDBSecurityGroup
+      KeyName: aws-cf-keypair
+      Tags:
+      - Key: Name
+        Value: awspriv02
+
+  PublicInstance1: 
+    Type: "AWS::EC2::Instance"
+    Properties: 
+      ImageId: !FindInMap [AMIRegionMap, !Ref "AWS::Region", !Ref EnvironmentType]
+      InstanceType: t2.micro
+      SubnetId: !Ref PublicSubnet1
+      SecurityGroupIds: 
+        - !Ref PublicWebSecurityGroup
+      KeyName: aws-cf-keypair
+      Tags:
+      - Key: Name
+        Value: awspub01
+
+  PublicInstance2: 
+    Type: "AWS::EC2::Instance"
+    Condition: PublicInstance2
+    Properties: 
+      ImageId: !FindInMap [AMIRegionMap, !Ref "AWS::Region", !Ref EnvironmentType]
+      InstanceType: t2.micro
+      SubnetId: !Ref PublicSubnet2
+      SecurityGroupIds: 
+        - !Ref PublicWebSecurityGroup
+      KeyName: aws-cf-keypair
+      Tags:
+      - Key: Name
+        Value: awspub02
+
+
+  BastionHost: 
+    Type: "AWS::EC2::Instance"
+    Condition: BastionHost
+    Properties: 
+      ImageId: !FindInMap [AMIRegionMap, !Ref "AWS::Region", !Ref EnvironmentType]
+      InstanceType: t2.micro
+      SubnetId: !Ref PublicSubnet1
+      SecurityGroupIds: 
+        - !Ref BastionSecurityGroup
+      KeyName: aws-cf-keypair
+      Tags:
+      - Key: Name
+        Value: awsbastion01
+
+

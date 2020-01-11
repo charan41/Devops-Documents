@@ -1,0 +1,54 @@
+Full Admin Access
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "*",
+            "Resource": "*"
+        }
+    ]
+}
+
+Full Read only Access	- Use ReadOnlyAccess default policy or copy
+
+
+S3 Admin Access
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": "*"
+        }
+    ]
+}
+
+
+Ec2 Admin Access
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "ec2:*",
+            "Resource": "*"
+        }
+    ]
+}
+
+
+EFS Admin Access
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "elasticfilesystem:*",
+            "Resource": "*"
+        }
+    ]
+}
+
+

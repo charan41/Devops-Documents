@@ -1,0 +1,19 @@
+Install webserver
+
+sudo su -
+yum -y install httpd
+echo "Demo Web Server" > /var/www/html/index.html
+systemctl enable httpd
+systemctl start httpd
+
+curl localhost
+
+
+
+user:admin
+paswd:i0CLkl7jzDITAqbNecdr
+
+
+
+mysql -h database-1.c90vyca2qire.us-east-2.rds.amazonaws.com -u admin -p
+password: i0CLkl7jzDITAqbNecdr
